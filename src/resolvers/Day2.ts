@@ -51,12 +51,36 @@ export const resolveTwo = async (filename: string): Promise<any> => {
         crlfDelay: Infinity
     });
 1
-    var gameSum = 0;  
+    let powerSum = 0;  
     reader.on('line', (line) => {
-        gameSum += 0;
+        const round = line.split(":");
+        const sets = round[1].trim().split(";");
+        let bag = [0, 0, 0];
+        sets.forEach(set => {
+            const cubes = set.trim().split(",");
+            cubes.forEach(cube => {
+                const params = cube.trim().split(" ");
+                const load = +params[0];
+                const color = params[1];
+                
+                if (color === "red") {
+                    bag[0] = Math.max(bag[0], load);
+                }
+
+                if (color === "green") {
+                    bag[1] = Math.max(bag[1], load);
+                }
+
+                if (color === "blue") {
+                    bag[2] = Math.max(bag[2], load);
+                }
+            });
+        });
+
+        powerSum += (bag[0] * bag[1] * bag[2]);
     });
 
     await events.once(reader, 'close');
 
-    return "" + gameSum;
+    return "" + powerSum;
 }
