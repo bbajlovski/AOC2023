@@ -1,11 +1,11 @@
 import fs from "fs";
 import readline from "readline";
 import events from "events";
-import { findFirstDigit, findLastDigit } from "../tools/Utils";
+import { findFirstDigitalDigit, findLastDigitalDigit, firstDigit, lastDigit } from "../tools/Utils";
+
+
    
 export const resolveOne = async (filename: string): Promise<any> => {
-
-    console.log("Part 1");
 
     const reader = readline.createInterface({
         input: fs.createReadStream("./inputs/" + filename),
@@ -14,7 +14,7 @@ export const resolveOne = async (filename: string): Promise<any> => {
 
     var calibrationSum = 0;  
     reader.on('line', (line) => {
-        calibrationSum += (10*findFirstDigit(line) + findLastDigit(line));     
+        calibrationSum += (10*findFirstDigitalDigit(line) + findLastDigitalDigit(line));     
     });
 
     await events.once(reader, 'close');
@@ -31,7 +31,7 @@ export const resolveTwo = async (filename: string): Promise<any> => {
 
     var calibrationSum = 0;  
     reader.on('line', (line) => {
-        calibrationSum += (10*findFirstDigit(line) + findLastDigit(line));     
+        calibrationSum += (10*firstDigit(line) + lastDigit(line));
     });
 
     await events.once(reader, 'close');
