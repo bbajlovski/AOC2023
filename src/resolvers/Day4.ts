@@ -39,11 +39,39 @@ export const resolveTwo = async (filename: string): Promise<any> => {
         crlfDelay: Infinity
     });
 1
-    let sum = 0;  
+    let gameSum = 0;
+    let cardWinnerCounts: number[] = [];
+    let totalCards: number[] = [];
     await reader.on('line', (line) => {
+        const game = line.split(":");
+        const combinations = game[1].trim().split("|");
+        const myNumbers = removeDoubleWhitespaces(combinations[0].trim()).split(" ");
+        const winningNumbers = removeDoubleWhitespaces(combinations[1].trim()).split(" ");
+
+        let winnerCounts = 0;
+        myNumbers.forEach(number => {
+            if (winningNumbers.includes(number)) {
+                winnerCounts++;
+            }
+        });
+        cardWinnerCounts.push(winnerCounts);
+        totalCards.push(1);
+        
     });
     await events.once(reader, 'close');
 
+    let index = 0;
+    cardWinnerCounts.forEach(winnerCounts => {
+        for (let deltaIndex = index + 1; deltaIndex <= index + winnerCounts; deltaIndex++) {
+            totalCards[deltaIndex] += totalCards[index];            
+        }
 
-    return "" + sum;
+        index++;
+    });
+    
+    totalCards.forEach(totalCard => {
+        gameSum += totalCard;
+    });
+
+    return "" + gameSum;
 }
