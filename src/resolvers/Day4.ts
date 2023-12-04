@@ -20,10 +20,8 @@ export const resolveOne = async (filename: string): Promise<any> => {
         const winningNumbers = removeDoubleWhitespaces(combinations[1].trim()).split(" ");
 
         let earnedPoints = 0;
-        let nums = "";
         myNumbers.forEach(number => {
             if (winningNumbers.includes(number)) {
-                nums = nums + number + " ";
                 earnedPoints = earnedPoints === 0 ? 1 : earnedPoints * 2;
             }
         });
