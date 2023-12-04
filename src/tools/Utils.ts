@@ -115,3 +115,7 @@ export const lastDigit = (val: string) : number => {
         return lastDigital;
     }
 }
+
+export const removeDoubleWhitespaces = (val: string) : string => {
+    return val.replace(/\s\s+/g, ' ');
+}
