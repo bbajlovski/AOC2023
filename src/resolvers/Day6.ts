@@ -1,10 +1,6 @@
 import fs from "fs";
 import readline from "readline";
 import events from "events";
-import { isDigit, removeDoubleWhitespaces } from "../tools/Utils";
-import { time } from "console";
-
-
    
 export const resolveOne = async (filename: string): Promise<any> => {
 
