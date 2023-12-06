@@ -41,9 +41,11 @@ export class Garden {
         steps.forEach(step => {
             let stop = false;
             this.process.forEach(processStep => {
+                let sourceStart = processStep.source;
+                let sourceEnd = processStep.source + processStep.range - 1;
                 if (!stop && 
                     processStep.processType === step && 
-                    processStep.source <= transfer && transfer <= processStep.source + processStep.range - 1) {
+                    sourceStart <= transfer && transfer <= sourceEnd) {
                     transfer = processStep.destination + (transfer - processStep.source);
                     stop = true;
                 }
@@ -52,5 +54,28 @@ export class Garden {
 
         location = transfer;
         return location;
+    }
+
+    public isValidLocation = (location: number) => {
+        let valid = false;
+
+        const steps: Step[] = ["seed-to-soil", "soil-to-fertilizer", "fertilizer-to-water", "water-to-light", "light-to-temperature", "temperature-to-humidity", "humidity-to-location"];
+        const backwardSteps = steps.reverse();
+
+        let transfer = location;
+
+        backwardSteps.forEach(step => {
+            this.process.forEach(processStep => {
+                let destinationStart = processStep.destination;
+                let destinationEnd = processStep.destination + processStep.range - 1;
+                if (destinationStart <= transfer && transfer <= destinationEnd && processStep.processType === step) {
+                    transfer = (transfer - processStep.destination) - processStep.source;
+                }
+            });
+        });
+
+
+
+        return valid;
     }
 }
