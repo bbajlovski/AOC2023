@@ -1,6 +1,7 @@
 import fs from "fs";
 import readline from "readline";
 import events from "events";
+import { removeDoubleWhitespaces } from "../tools/Utils";
    
 export const resolveOne = async (filename: string): Promise<any> => {
 
