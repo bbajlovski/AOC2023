@@ -40,16 +40,24 @@ export const resolveTwo = async (filename: string): Promise<any> => {
         input: fs.createReadStream("./inputs/" + filename),
         crlfDelay: Infinity
     });
-1
-    let sum = 0;  
-    let lines: string[] = [];
+
+    let product = 0;
+    let time = 0;
+    let distance = 0;
     await reader.on('line', (line) => {
-        lines.push(line);   
+
+        if (line.startsWith("Time:")) {
+            time = +line.split(":")[1].trim().replaceAll(" ", "");
+        }
+        if (line.startsWith("Distance:")) {
+            distance = +line.split(":")[1].trim().replaceAll(" ", "");
+        }
     });
     await events.once(reader, 'close');
 
+    product = calculateOptions(time, distance);
 
-    return "" + sum;
+    return "" + product;
 }
 
 const calculateOptions = (time: number, distance: number) : number => {
