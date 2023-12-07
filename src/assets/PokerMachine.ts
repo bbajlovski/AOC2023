@@ -29,23 +29,16 @@ type Combination =
 export class PokerMachine {
   private cardStrengths: Card[];
   private combinationStrengths: Combination[];
+  private includeJoker: boolean;
 
-  constructor() {
-    this.cardStrengths = [
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "T",
-      "J",
-      "Q",
-      "K",
-      "A",
-    ];
+  constructor(includeJoker: boolean) {
+    this.includeJoker = includeJoker;
+
+    this.cardStrengths = 
+        !this.includeJoker ? 
+        [ "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"] :
+        [ "J", "2", "3", "4", "5", "6", "7", "8", "9", "T", "Q", "K", "A"];
+        
     this.combinationStrengths = [
       "high-card",
       "one-pair",
@@ -58,36 +51,58 @@ export class PokerMachine {
   }
 
   private isFiveOfAKind = (hand: Hand): boolean => {
-    return this.countMaxCardRepeat(hand).includes(5);
+    const jokers = this.countJokers(hand);
+    return this.countMaxCardRepeat(hand).includes(5 - jokers) || jokers === 5;
   };
 
   private isFourOfAKind = (hand: Hand): boolean => {
-    return this.countMaxCardRepeat(hand).includes(4);
+    const jokers = this.countJokers(hand);
+    return this.countMaxCardRepeat(hand).includes(4 - jokers);
   };
 
   private isFullHouse = (hand: Hand): boolean => {
-    return this.countMaxCardRepeat(hand).includes(3) && this.countMaxCardRepeat(hand).includes(2);
+    const jokers = this.countJokers(hand);
+    const twos = this.countMaxCardRepeat(hand).filter((cardRepeat) => cardRepeat === 2).length;
+    const hasThree = this.countMaxCardRepeat(hand).includes(3);
+    return hasThree && twos === 2 || (twos === 4 && jokers === 1);
   };
 
   private isThreeOfAKind = (hand: Hand): boolean => {
-    return this.countMaxCardRepeat(hand).includes(3) && !this.countMaxCardRepeat(hand).includes(2);
+    const jokers = this.countJokers(hand);
+    const twos = this.countMaxCardRepeat(hand).filter((cardRepeat) => cardRepeat === 2).length;
+    const hasThree = this.countMaxCardRepeat(hand).includes(3);
+    return ((hasThree || jokers === 2 ) && twos === 0) || (twos === 2 && jokers === 1);
   };
 
   private isTwoPairs = (hand: Hand): boolean => {
-    return this.countMaxCardRepeat(hand).filter((cardRepeat) => cardRepeat === 2).length === 4;
+    const jokers = this.countJokers(hand);
+    const twos = this.countMaxCardRepeat(hand).filter((cardRepeat) => cardRepeat === 2).length;
+    return twos === 4 || (twos === 2 && jokers === 1);
+
   };
 
   private isOnePair = (hand: Hand): boolean => {
-    return this.countMaxCardRepeat(hand).filter((cardRepeat) => cardRepeat === 2).length === 2;
+    const jokers = this.countJokers(hand);
+    const twos = this.countMaxCardRepeat(hand).filter((cardRepeat) => cardRepeat === 2).length;
+    return (jokers === 0 && twos === 2) || jokers === 1;
+
   };
 
   private countMaxCardRepeat = (hand: Hand): number[] => {
-    let cardRepeats: number[] = [];
+    let cardRepeats: number[] = [];    
     for (let index = 0; index < 5; index++) {
-      let cardRepeat = hand.cards.filter((card) => card === hand.cards[index]).length;
+      let cardRepeat = hand.cards.filter((card) => !(this.includeJoker && card === "J") && card === hand.cards[index]).length;
       cardRepeats.push(cardRepeat);
     }
     return cardRepeats;
+  }
+
+  public countJokers = (hand: Hand): number => {
+    if (this.includeJoker) {
+        return hand.cards.filter((card) => card === "J").length;
+    } else {
+        return 0;
+    }
   }
 
 

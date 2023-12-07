@@ -20,7 +20,7 @@ export const resolveOne = async (filename: string): Promise<any> => {
     });
     await events.once(reader, 'close');
 
-    let pokerMachine = new PokerMachine();
+    let pokerMachine = new PokerMachine(false);
     let sortedHands = hands.sort((handOne, handeTwo) => {
         return pokerMachine.compareHands(handOne, handeTwo);
     });
@@ -40,12 +40,25 @@ export const resolveTwo = async (filename: string): Promise<any> => {
         crlfDelay: Infinity
     });
 
-    let sum = 0;
+    let totalWinnings = 0;
+    let hands: Hand[] = [];
     await reader.on('line', (line) => {
-
+        hands.push({
+            cards: line.split(" ")[0].split("").map(card => card as Card),
+            bid: +line.split(" ")[1]
+        });        
     });
     await events.once(reader, 'close');
 
+    let pokerMachine = new PokerMachine(true);
+    let sortedHands = hands.sort((handOne, handeTwo) => {
+        return pokerMachine.compareHands(handOne, handeTwo);
+    });
 
-    return "" + sum;
+    sortedHands.forEach((hand, index) => {
+        totalWinnings += (hand.bid*(index+1));
+    });
+   
+
+    return "" + totalWinnings;
 }
