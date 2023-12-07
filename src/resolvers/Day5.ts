@@ -60,7 +60,6 @@ export const resolveTwo = async (filename: string): Promise<any> => {
         let max = +seeds[index] + (+seeds[index+1]);
 
         for (let start = +seeds[index]; start < max; start += chunk) {
-            console.log(`Start: ${start}`);
             let end = start + chunk;
             for (let seed = start; seed < end && seed < max; seed++) {
                 const location = garden.getLocation(seed);
