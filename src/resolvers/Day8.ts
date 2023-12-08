@@ -69,7 +69,6 @@ const countSteps = (steps: string, locations: Map<string, Location>): number => 
         steps.split("").forEach(step => {
             let location = locations.get(nextStep);
             count++;
-            console.log(count);
             if (step === "L") {
                 nextStep = location?.left || "";
             }
