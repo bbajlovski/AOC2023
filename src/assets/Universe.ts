@@ -68,9 +68,9 @@ export class Universe {
 
   private clone = (oldGalaxies: string[][]): string[][] => {
     let newGalaxies: string[][] = [];
-    oldGalaxies.forEach((row, rowIndex) => {
+    oldGalaxies.forEach((row) => {
       let newRow: string[] = [];
-      row.forEach((field, columnIndex) => {
+      row.forEach((field) => {
         newRow.push(field);
       });
       newGalaxies.push(newRow);
