@@ -1,10 +1,9 @@
 import fs from "fs";
 import readline from "readline";
 import events from "events";
-import { isEven, isOdd } from "../tools/Utils";
-import { Maze } from "../assets/Maze";
+import { Universe } from "../assets/Universe";
 
-let maze: Maze;
+let universe: Universe;
 
 export const resolveOne = async (filename: string): Promise<any> => {
 
@@ -13,31 +12,32 @@ export const resolveOne = async (filename: string): Promise<any> => {
         crlfDelay: Infinity
     });
 
-    let farAway = 0;
-    let pipeMaze: string[][] = [];
+    let distanceSum = 0;
+    let galaxies: string[][] = [];
     await reader.on('line', (line) => {
         let row: string[] = [];
         line.split("").forEach((move, columnIndex) => {
             row.push(move);
         });
-        pipeMaze.push(row);
+        galaxies.push(row);
     });
     await events.once(reader, 'close');
 
-    maze = new Maze(pipeMaze);
+    universe = new Universe(galaxies);
+    universe.print();
+    universe.expandUniverse();
+    console.log("Expanded universe:");
+    universe.print();
 
-    farAway = maze.markAndCountSteps() / 2;
-        
-    return "" + farAway;
+    distanceSum = universe.sumDistances();
+       
+    return "" + distanceSum;
 }
 
 export const resolveTwo = async (filename: string): Promise<any> => {
     
-    let insideCount = 0;
-    
-    maze.massiveFloodFill();
+    let sum = 0;
 
-    maze.printMaze();
         
-    return "" + insideCount;
+    return "" + sum;
 }
