@@ -24,11 +24,7 @@ export const resolveOne = async (filename: string): Promise<any> => {
     await events.once(reader, 'close');
 
     universe = new Universe(galaxies);
-    universe.print();
     universe.expandUniverse();
-    console.log("Expanded universe:");
-    universe.print();
-
     distanceSum = universe.sumDistances();
        
     return "" + distanceSum;
