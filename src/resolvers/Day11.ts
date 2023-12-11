@@ -32,8 +32,11 @@ export const resolveOne = async (filename: string): Promise<any> => {
 
 export const resolveTwo = async (filename: string): Promise<any> => {
     
-    let sum = 0;
+    let distanceSum = 0;
+
+    universe.restoreOriginalGalaxies();
+    distanceSum = universe.sumDistancesWithVirtualExpansion(1_000_000);
 
         
-    return "" + sum;
+    return "" + distanceSum;
 }
