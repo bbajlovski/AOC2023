@@ -11,7 +11,7 @@ export class Maze {
 
     constructor(pipeMaze: string[][]) {
         this.originalMaze = pipeMaze;
-        this.maze = this.cloneMaze(pipeMaze);
+        this.maze = this.clone(pipeMaze);
         this.startingPosition = {row: -1, column: -1};
 
         this.maze.forEach((row, rowIndex) => {
@@ -23,7 +23,7 @@ export class Maze {
         });
     }
 
-    public markAndCountSteps(): number {
+    public markAndCountSteps = (): number => {
         let currentPosition: Coordinates = this.startingPosition;
         let previousPosition: Coordinates = {row: -1, column: -1} as Coordinates;
         let steps = 0;
@@ -39,11 +39,36 @@ export class Maze {
         return steps;
     }
 
-    cloneMaze = (oldMaze: string[][]): string[][] => {
+    markOuterBorders = () => {
+        let currentPosition: Coordinates = this.startingPosition;
+        let previousPosition: Coordinates = {row: -1, column: -1} as Coordinates;
+        let steps = 0;
+        let maze = this.clone(this.originalMaze);
+        
+        while (!(currentPosition.row === this.startingPosition.row && 
+            currentPosition.column === this.startingPosition.column) || steps === 0) {
+            let nextPosition = this.calculateNextCoordinates(currentPosition, previousPosition, maze);
+            previousPosition = currentPosition;            
+            currentPosition = nextPosition;
+            let outerBorderPosition = this.findOuterBorder(currentPosition);
+            steps++;
+        }
+    }
+
+    findOuterBorder = (position: Coordinates): Coordinates => {
+        let borderPosition = {row: -1, column: -1};
+
+
+
+        return borderPosition;
+
+    }
+
+    clone = (oldMaze: string[][]): string[][] => {
         let newMaze: string[][] = [];
-        oldMaze.forEach((row, rowIndex) => {
+        oldMaze.forEach((row) => {
             let newRow: string[] = [];
-            row.forEach((field, columnIndex) => {
+            row.forEach((field) => {
                 newRow.push(field);
             });
             newMaze.push(newRow);
@@ -251,22 +276,6 @@ export class Maze {
         }
     }
 
-    public markOutern(): number {
-        let currentPosition: Coordinates = this.startingPosition;
-        let previousPosition: Coordinates = {row: -1, column: -1} as Coordinates;
-        let steps = 0;
-        
-        while (!(currentPosition.row === this.startingPosition.row && 
-            currentPosition.column === this.startingPosition.column) || steps === 0) {
-            let nextPosition = this.calculateNextCoordinates(currentPosition, previousPosition, this.originalMaze);
-            previousPosition = currentPosition;
-            this.maze[currentPosition.row][currentPosition.column] = "*";
-            currentPosition = nextPosition;
-            steps++;
-        }
-        return steps;
-    }
-
     public massiveFloodFill = () => {
         this.maze.forEach((row, rowIndex) => {
             if (this.maze[rowIndex][0] !== "*" && this.maze[rowIndex][0] !== "O") {
@@ -287,6 +296,7 @@ export class Maze {
             }
         });
 
+        this.markOuterBorders();
     }
 
     public printMaze = () => {
@@ -297,4 +307,5 @@ export class Maze {
             process.stdout.write("\n");
         });
     }
+
 }

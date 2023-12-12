@@ -120,6 +120,61 @@ export const removeDoubleWhitespaces = (val: string) : string => {
     return val.replace(/\s\s+/g, ' ');
 }
 
+export const removeDuplicates = (val: string, char: string) : string => {
+    let result = val;
+    while (result.includes(char + char)) {
+        result = result.replaceAll(char + char, char);
+    }
+
+    return result;
+}
+
+export const containsOnly = (val: string, chars: string[]) : boolean => {
+    let result = true;
+
+    val.split("").forEach(char => {
+        if (!chars.includes(char)) {
+            result = false;
+        }
+    });
+
+    return result;
+}
+
+export const countOccurrences = (val: string, char: string) : number => {
+    return val.split(char).length - 1;
+}
+
+export const replaceOccurrence = (original: string, charToReplace: string, charsToUse: string) : string => {
+    
+    let result = original;
+
+    charsToUse.split("").forEach(char => {
+        result = result.replace(charToReplace, char);
+    });
+
+    return result;
+}
+
+export const generateCombinations = (length: number, characters: string[]): string[] => {
+    const combinations: string[] = [];
+
+    const backtrack = (currentCombination: string, remainingLength: number) => {
+        if (remainingLength === 0) {
+            combinations.push(currentCombination);
+            return;
+        }
+
+        for (let i = 0; i < characters.length; i++) {
+            backtrack(currentCombination + characters[i], remainingLength - 1);
+        }
+    };
+
+    backtrack('', length);
+
+    return combinations;
+};
+
 export const lcm = (...arr: number[]) => {
     const gcd = (x: number, y: number): number => (!y ? x : gcd(y, x % y));
     const _lcm = (x: number, y: number) => (x * y) / gcd(x, y);
